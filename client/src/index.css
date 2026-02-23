@@ -229,7 +229,16 @@
   }
 }
 
-/* Scrollbar styling */
+/* Scrollbar styling — Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(0.80 0.01 50) transparent;
+}
+.dark * {
+  scrollbar-color: oklch(0.35 0.01 50) transparent;
+}
+
+/* Scrollbar styling — Webkit (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

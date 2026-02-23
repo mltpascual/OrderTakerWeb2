@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Loader2, UtensilsCrossed } from "lucide-react";
 import { useLocation } from "wouter";
 
-const LOGIN_HERO_URL = "/login-hero.png";
+const LOGIN_HERO_URL = "/login-hero.webp";
 
 export default function Login() {
   const { login } = useAuth();
@@ -54,7 +54,7 @@ export default function Login() {
             <div className="absolute -inset-8 bg-primary/5 rounded-3xl blur-2xl" />
             <img
               src={LOGIN_HERO_URL}
-              alt="Cafe counter illustration"
+              alt="Tablet and phone displaying Order Taker dashboard on a cafe countertop"
               className="relative w-full max-w-sm rounded-2xl shadow-warm-xl"
             />
           </div>
