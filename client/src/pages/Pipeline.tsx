@@ -182,6 +182,7 @@ export default function Pipeline() {
     completed: "date-latest",
   });
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [completeTarget, setCompleteTarget] = useState<string | null>(null);
 
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const [editItems, setEditItems] = useState<OrderItem[]>([]);
@@ -222,13 +223,15 @@ export default function Pipeline() {
     setTabSorts((prev) => ({ ...prev, [activeTab]: sort }));
   };
 
-  const handleComplete = async (id: string) => {
+  const handleComplete = async () => {
+    if (!completeTarget) return;
     try {
-      await completeOrder(id);
+      await completeOrder(completeTarget);
       toast.success("Order completed!");
     } catch {
       toast.error("Failed to complete order");
     }
+    setCompleteTarget(null);
   };
 
   const handleDelete = async () => {
@@ -472,7 +475,7 @@ export default function Pipeline() {
                 <Button
                   size="sm"
                   className="h-8 gap-1.5 rounded-xl font-semibold shadow-warm-sm"
-                  onClick={() => handleComplete(order.id)}
+                  onClick={() => setCompleteTarget(order.id)}
                 >
                   <Check className="w-3.5 h-3.5" />
                   Complete
@@ -805,6 +808,27 @@ export default function Pipeline() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Complete confirmation */}
+      <AlertDialog open={!!completeTarget} onOpenChange={() => setCompleteTarget(null)}>
+        <AlertDialogContent className="rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Complete this order?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will mark the order as completed and move it to the Complete tab.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleComplete}
+              className="rounded-xl"
+            >
+              Complete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Delete confirmation */}
       <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
