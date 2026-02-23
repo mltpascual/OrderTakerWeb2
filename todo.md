@@ -1,0 +1,78 @@
+# Order Taker App - TODO
+
+- [x] Project setup & Firebase integration
+- [x] Firebase credentials configured via env vars
+- [x] Design system (Swiss Utility - teal accent, DM Sans + Inter fonts)
+- [x] Firebase Auth context (email/password login)
+- [x] TypeScript types for MenuItem, Order, OrderItem, AppSettings
+- [x] Firestore hooks: useMenu, useOrders, useSettings
+- [x] Login page with hero illustration
+- [x] Main layout with sidebar (desktop) and bottom tab bar (mobile)
+- [x] New Order page with menu grid and cart
+- [x] Order Pipeline page with Today/Pending/Completed tabs
+- [x] Menu Management page with CRUD, search, category filter, availability toggle
+- [x] Reports page with Daily/Weekly/Monthly/All-Time views
+- [x] Settings page: Order sources management
+- [x] Settings page: Dark/Light mode toggle
+- [x] Settings page: Export orders as CSV
+- [x] Settings page: Export menu as CSV
+- [x] Settings page: Import menu from CSV
+- [x] Settings page: Import orders from CSV
+- [x] Settings page: Sign out
+- [x] Fix index.html head tag issue
+- [x] Data migration script (single-item to multi-item orders)
+- [x] Color chooser in settings
+- [x] Vitest tests for core functionality
+- [x] TDD Batch 1: Cart operations, pipeline filtering, menu/order validation, order number generation (38 tests)
+- [x] TDD Batch 2: Source management, CSV export/import parsing, row grouping, special characters (35 tests)
+- [x] TDD Batch 3: Report statistics, top items, orders by source, date range filtering, edge cases (20 tests)
+- [x] Search/filter bar in Order Pipeline (by customer name or order number)
+- [x] Order editing from pipeline (modify items, quantities, notes on pending orders)
+- [x] Duplicate orders/records
+- [x] Return order from completed back to pending
+- [x] Bug fix: Focus-out triggered when typing customer name/notes
+- [x] Date and time validation on order creation
+- [x] Bug fix: No validation on past time when adding order (same-day past time allowed)
+- [x] Bug fix: No validation on past date/time when editing order
+- [x] Feature: Source field is required with default placeholder "Marketplace"
+- [x] Feature: Custom order — allow custom item name and custom price (not from menu)
+- [x] Feature: Pipeline sorting options (by time, customer name, or total)
+- [x] Feature: Currency selector (Peso ₱ or Dollar $)
+- [x] Feature: Reports — Orders by source breakdown (with revenue)
+- [x] Feature: Reports — Orders by category breakdown
+- [x] Bug fix: Add Item dropdown not showing other options after selecting a category (need to clear text first)
+- [x] Update: Sorting labels — Date: Earliest, Date: Latest, Price: Low to High, Price: High to Low
+- [x] Bug fix: Today's Orders in pipeline showing by creation date instead of pickup date
+- [x] Feature: Independent sort/filter per pipeline tab (Today, Pending, Completed each have their own sort state, default: Latest)
+- [x] Feature: Add Top Earning Items section in Reports
+- [x] UI: Orders by Category in Reports should have separate boxes (like Top Selling Items and Orders by Source)
+- [x] UI: Reorder report time ranges to All Time, Monthly, Weekly, Daily
+- [x] UI: Pipeline order cards should show item/cake name first, then customer name
+- [x] UI: Global date format should be "Sun, Feb 22 at 2:30 PM" across the entire app
+- [x] UI: Move sort filter button inline with Today/Pending/Completed tab pills (same row)
+- [x] UI: Top Selling Items — show quantity only with progress bar (no price)
+- [x] UI: Top Earning Items — show price only with progress bar (no quantity)
+- [x] Feature: Add revenue trend chart (bar or pie) to Reports page
+- [x] UI: Expandable category boxes — click category to expand and show individual item breakdown with quantities and progress bars
+- [x] UI: Monthly report chart labels should show specific date ranges (e.g., Feb 1-7) instead of Week 1, Week 2
+- [x] Deploy: Push latest code to GitHub (mltpascual/OrderTakerWeb)
+- [x] Deploy: Prepare Vercel deployment configuration files
+- [x] Bug fix: Vercel build TypeScript errors - Express type mismatches in api/index.ts, oauth.ts, cookies.ts, sdk.ts, routers.ts
+- [x] UI: Move sort/filter button below the pill buttons in Order Pipeline (not same row)
+- [x] Bug fix: Mobile - NewOrder form has no side margins/padding (masikip)
+- [x] Bug fix: Mobile - Pickup Date and Pickup Time fields overlap each other
+- [x] Bug fix: Mobile - Place Order button is too small
+- [x] UI: Apply mobile responsive fixes to Reports page (margins, stacking grids, touch-friendly elements)
+- [x] UI: Apply mobile responsive fixes to Pipeline page (card spacing, text overflow, tab pills, sort dropdown)
+- [x] Feature: Add pull-to-refresh gesture on mobile for Pipeline and Reports pages
+- [x] UI: Test and fix NewOrder menu item grid on mobile for easier tapping
+- [x] Deploy: Push all latest updates to GitHub
+- [x] Bug fix: Mobile cart sheet - no bottom margin below Place Order button
+- [x] Bug fix: Mobile cart sheet - Pickup Date/Time fields exceed modal width, should align with Customer Name input
+- [x] Bug fix: Mobile cart sheet - all text boxes should have same height
+- [x] Feature: Add PWA support (manifest, service worker, icons) for installable mobile app
+- [x] Bug fix: Mobile cart - Pickup Date/Time inputs still too tall and too wide, must match Customer Name input height and width
+- [x] Bug fix: Mobile cart sheet - extend modal height so order items are visible when selecting items
+- [x] UI: Move Add Custom Item button into the order items list area instead of below the form
+- [x] UI: Edit Order modal on mobile should use same bottom sheet layout as New Order cart (full-width, slide up from bottom, consistent padding)
+- [x] Bug fix: Edit Order mobile sheet still has side gaps (not full-width edge-to-edge like New Order sheet)
