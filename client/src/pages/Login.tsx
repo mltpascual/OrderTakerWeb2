@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Loader2, UtensilsCrossed } from "lucide-react";
 import { useLocation } from "wouter";
 
-const LOGIN_HERO_URL = "https://private-us-east-1.manuscdn.com/sessionFile/HpU7xop10LO54a7ywm8mXF/sandbox/ySfWRC7P7dIqWJXfcTJbTO-img-1_1771752429000_na1fn_bG9naW4taGVybw.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSHBVN3hvcDEwTE81NGE3eXdtOG1YRi9zYW5kYm94L3lTZldSQzdQN2RJcVdKWGZjVEpiVE8taW1nLTFfMTc3MTc1MjQyOTAwMF9uYTFmbl9iRzluYVc0dGFHVnlidy5wbmc~eC1vc3MtcHJvY2Vzcz1pbWFnZS9yZXNpemUsd18xOTIwLGhfMTkyMC9mb3JtYXQsd2VicC9xdWFsaXR5LHFfODAiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=hfkqQzM9tE5rCaqYxcK0UgX-23LiBaIC~2gtPplS4c1t7Ng4MFsqzx45LbX7nuZtXXtnx2ht3byMCQ13QSSJ0CQ0XZWxWD-bjzr-d4Klr6BNhAnZSlE1jdrEQ5dxh5Rnlb189~XQlcECeFEakE1IqekbBaAUqyTMI-GluwmXXf2VSTuxVviqDMYBiWqkZVqUi-JQAbVb4ZF7LzNfLj0li28EJNnkXe45JSw9N-prz0aSw8QzsCP9ZMtOGePvro9toPTG0F0JmuqnaJTGV0h37qbePxa9Pfk2N8xEBXhfP3Nv8ZpYixlpiDX7cLbIQgFQeo~m-IvzK6BgFdE7~3dgUg__";
+const LOGIN_HERO_URL = "/login-hero.png";
 
 export default function Login() {
   const { login } = useAuth();
