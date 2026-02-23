@@ -632,7 +632,7 @@ export default function NewOrder() {
           </SheetTrigger>
           <SheetContent side="bottom" className="h-[95vh] rounded-t-3xl px-5 pb-8 overflow-y-auto overflow-x-hidden">
             <SheetHeader className="pb-3">
-              <SheetTitle className="text-lg font-bold">Current Order</SheetTitle>
+              <SheetTitle className="text-lg font-bold text-center">Current Order</SheetTitle>
             </SheetHeader>
             {cartContentJSX}
           </SheetContent>

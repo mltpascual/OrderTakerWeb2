@@ -831,7 +831,7 @@ export default function Pipeline() {
       <Sheet open={isMobile && !!editOrder} onOpenChange={() => setEditOrder(null)}>
         <SheetContent side="bottom" className="h-[95vh] rounded-t-3xl px-5 pb-8 overflow-y-auto overflow-x-hidden">
           <SheetHeader className="pb-3">
-            <SheetTitle className="text-lg font-bold">Edit Order</SheetTitle>
+            <SheetTitle className="text-lg font-bold text-center">Edit Order</SheetTitle>
           </SheetHeader>
           {editFormContent}
         </SheetContent>
@@ -840,7 +840,7 @@ export default function Pipeline() {
       <Dialog open={!isMobile && !!editOrder} onOpenChange={() => setEditOrder(null)}>
         <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl">
           <DialogHeader>
-            <DialogTitle>Edit Order</DialogTitle>
+            <DialogTitle className="text-center">Edit Order</DialogTitle>
           </DialogHeader>
           {editFormContent}
         </DialogContent>
