@@ -177,8 +177,8 @@ export default function Pipeline() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"today" | "pending" | "completed">("today");
   const [tabSorts, setTabSorts] = useState<Record<string, SortOption>>({
-    today: "date-latest",
-    pending: "date-latest",
+    today: "date-earliest",
+    pending: "date-earliest",
     completed: "date-latest",
   });
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
