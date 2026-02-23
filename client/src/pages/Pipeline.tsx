@@ -205,7 +205,7 @@ export default function Pipeline() {
   const searchedOrders = useMemo(() => searchOrders(orders, searchQuery), [orders, searchQuery]);
 
   const todayOrders = useMemo(
-    () => sortOrders(searchedOrders.filter((o) => o.pickupDate === today), tabSorts.today),
+    () => sortOrders(searchedOrders.filter((o) => o.pickupDate === today && o.status === "pending"), tabSorts.today),
     [searchedOrders, today, tabSorts.today]
   );
   const pendingOrders = useMemo(
