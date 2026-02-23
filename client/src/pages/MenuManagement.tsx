@@ -1,7 +1,8 @@
 /*
- * Design: Swiss Utility — Functional Minimalism
- * Menu Management: Table/list of items with add/edit modal
- * Category filter, availability toggle, inline actions
+ * Design: Warm Craft — Premium Food-Tech Aesthetic
+ * Menu Management: List of items with add/edit modal
+ * Category filter pills, availability toggle, inline actions
+ * Rounded-2xl cards, warm shadows, smooth transitions
  */
 import { useState, useRef } from "react";
 import { useMenu } from "@/hooks/useMenu";
@@ -149,9 +150,9 @@ export default function MenuManagement() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-5">
         <h1 className="text-2xl font-bold tracking-tight">Menu</h1>
-        <Button onClick={openAdd} size="sm" className="gap-1.5">
+        <Button onClick={openAdd} size="sm" className="gap-1.5 rounded-xl shadow-warm-sm font-semibold">
           <Plus className="w-4 h-4" />
           Add Item
         </Button>
@@ -159,24 +160,24 @@ export default function MenuManagement() {
 
       {/* Search */}
       <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
           placeholder="Search menu items..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9"
+          className="pl-10 rounded-xl"
         />
       </div>
 
       {/* Category filter */}
-      <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
+      <div className="flex gap-2 mb-5 overflow-x-auto pb-2 scrollbar-hide">
         <button
           onClick={() => setActiveCategory("All")}
           className={cn(
-            "px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors duration-150",
+            "px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-200",
             activeCategory === "All"
-              ? "bg-primary text-primary-foreground"
-              : "bg-muted text-muted-foreground hover:bg-accent"
+              ? "bg-primary text-primary-foreground shadow-warm-sm"
+              : "bg-muted text-muted-foreground hover:bg-accent hover:text-foreground"
           )}
         >
           All ({menuItems.length})
@@ -188,10 +189,10 @@ export default function MenuManagement() {
               key={cat}
               onClick={() => setActiveCategory(cat)}
               className={cn(
-                "px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors duration-150",
+                "px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-200",
                 activeCategory === cat
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:bg-accent"
+                  ? "bg-primary text-primary-foreground shadow-warm-sm"
+                  : "bg-muted text-muted-foreground hover:bg-accent hover:text-foreground"
               )}
             >
               {cat} ({count})
@@ -202,8 +203,8 @@ export default function MenuManagement() {
 
       {/* Items list */}
       {filteredItems.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground">
-          <p className="text-sm">
+        <div className="text-center py-16 text-muted-foreground">
+          <p className="text-sm font-medium">
             {menuItems.length === 0
               ? "No menu items yet. Add your first item!"
               : "No items match your search"}
@@ -212,21 +213,27 @@ export default function MenuManagement() {
       ) : (
         <div className="space-y-2">
           {filteredItems.map((item) => (
-            <Card key={item.id} className={cn(item.available === false && "opacity-60")}>
-              <CardContent className="p-3 flex items-center gap-3">
+            <Card
+              key={item.id}
+              className={cn(
+                "rounded-2xl border-border/50 shadow-warm-sm transition-all duration-200 hover:shadow-warm",
+                item.available === false && "opacity-50"
+              )}
+            >
+              <CardContent className="p-4 flex items-center gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium truncate">{item.name}</p>
+                    <p className="text-sm font-semibold truncate">{item.name}</p>
                     {item.available === false && (
-                      <Badge variant="outline" className="text-[10px] text-muted-foreground">
+                      <Badge variant="outline" className="text-[10px] text-muted-foreground rounded-md">
                         Unavailable
                       </Badge>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs text-muted-foreground">{item.category}</span>
-                    <span className="text-xs text-muted-foreground">·</span>
-                    <span className="text-sm font-semibold text-primary tabular-nums">
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-xs text-muted-foreground font-medium">{item.category}</span>
+                    <span className="text-xs text-muted-foreground/50">·</span>
+                    <span className="text-sm font-bold text-primary tabular-nums">
                       {formatPrice(item.basePrice, currency)}
                     </span>
                   </div>
@@ -240,7 +247,7 @@ export default function MenuManagement() {
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                    className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground rounded-lg"
                     onClick={() => openEdit(item)}
                   >
                     <Pencil className="w-3.5 h-3.5" />
@@ -248,7 +255,7 @@ export default function MenuManagement() {
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                    className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive rounded-lg"
                     onClick={() => setDeleteTarget(item.id)}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -262,23 +269,23 @@ export default function MenuManagement() {
 
       {/* Add/Edit dialog */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent className="sm:max-w-sm rounded-2xl">
           <DialogHeader>
             <DialogTitle>{editingItem ? "Edit Item" : "Add Item"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="itemName">Name</Label>
+              <Label htmlFor="itemName" className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider">Name</Label>
               <Input
                 id="itemName"
                 placeholder="e.g., Iced Latte"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="mt-1"
+                className="mt-1.5 rounded-xl"
               />
             </div>
             <div>
-              <Label htmlFor="itemPrice">Price</Label>
+              <Label htmlFor="itemPrice" className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider">Price</Label>
               <Input
                 id="itemPrice"
                 type="number"
@@ -287,13 +294,13 @@ export default function MenuManagement() {
                 placeholder="0.00"
                 value={formData.basePrice}
                 onChange={(e) => setFormData({ ...formData, basePrice: e.target.value })}
-                className="mt-1"
+                className="mt-1.5 rounded-xl"
               />
             </div>
             <div>
-              <Label htmlFor="itemCategory">Category</Label>
+              <Label htmlFor="itemCategory" className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider">Category</Label>
               {categories.length > 0 ? (
-                <div className="mt-1 space-y-2">
+                <div className="mt-1.5 space-y-2">
                   <Select
                     value={categories.includes(formData.category) ? formData.category : "__new__"}
                     onValueChange={(val) => {
@@ -304,7 +311,7 @@ export default function MenuManagement() {
                       }
                     }}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="rounded-xl">
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -323,6 +330,7 @@ export default function MenuManagement() {
                       value={formData.category}
                       onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                       autoFocus
+                      className="rounded-xl"
                     />
                   )}
                 </div>
@@ -332,12 +340,12 @@ export default function MenuManagement() {
                   placeholder="e.g., Drinks, Dessert"
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="mt-1"
+                  className="mt-1.5 rounded-xl"
                 />
               )}
             </div>
             <div className="flex items-center justify-between">
-              <Label htmlFor="itemAvailable">Available</Label>
+              <Label htmlFor="itemAvailable" className="text-[0.8125rem] font-medium">Available</Label>
               <Switch
                 id="itemAvailable"
                 checked={formData.available}
@@ -346,10 +354,10 @@ export default function MenuManagement() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsFormOpen(false)}>
+            <Button variant="outline" onClick={() => setIsFormOpen(false)} className="rounded-xl">
               Cancel
             </Button>
-            <Button onClick={handleSave} disabled={isSaving}>
+            <Button onClick={handleSave} disabled={isSaving} className="rounded-xl shadow-warm-sm">
               {isSaving ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -367,7 +375,7 @@ export default function MenuManagement() {
 
       {/* Delete confirmation */}
       <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this menu item?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -375,10 +383,10 @@ export default function MenuManagement() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-xl"
             >
               Delete
             </AlertDialogAction>

@@ -1,9 +1,7 @@
 /*
- * Design: Swiss Utility — Functional Minimalism
- * Pipeline: Three tabs (Today, Pending, Completed) with order cards
- * Pill-shaped status badges, inline actions
- * Features: Search/filter, return to pending, duplicate order, edit order,
- *           sorting options, date/time validation on edit, custom items in edit
+ * Design: Warm Craft — Premium Food-Tech Aesthetic
+ * Pipeline: Three tabs (Today, Pending, Completed) with elevated order cards
+ * Warm shadows, rounded-2xl, smooth transitions
  */
 import { useState, useMemo, useCallback } from "react";
 import { useOrders } from "@/hooks/useOrders";
@@ -64,6 +62,7 @@ import {
   ArrowUpDown,
   PackagePlus,
   AlertCircle,
+  ClipboardList,
 } from "lucide-react";
 import type { Order, OrderItem, CartItem } from "@/lib/types";
 import { formatPrice } from "@/lib/types";
@@ -72,7 +71,6 @@ import { formatDisplayDate } from "@/lib/dateFormat";
 import PullToRefresh from "@/components/PullToRefresh";
 import { useIsMobile } from "@/hooks/useMobile";
 
-// Search function (matches tested pure function)
 function searchOrders(orders: Order[], query: string): Order[] {
   if (!query.trim()) return orders;
   const q = query.toLowerCase().trim();
@@ -84,7 +82,6 @@ function searchOrders(orders: Order[], query: string): Order[] {
   });
 }
 
-// Sort function — sorts by pickup date/time, not creation timestamp
 type SortOption = "date-earliest" | "date-latest" | "price-low" | "price-high";
 
 function sortOrders(orders: Order[], sortBy: SortOption): Order[] {
@@ -111,7 +108,6 @@ function sortOrders(orders: Order[], sortBy: SortOption): Order[] {
   }
 }
 
-// Edit order validation (matches tested pure function)
 function validateEditOrder(data: {
   customerName: string;
   items: OrderItem[];
@@ -146,7 +142,6 @@ function validateEditOrder(data: {
         errors.push("Pickup date cannot be in the past");
       }
 
-      // If same day, check if time is in the past
       if (
         selectedDate.getTime() === today.getTime() &&
         data.pickupTime
@@ -188,7 +183,6 @@ export default function Pipeline() {
   });
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
-  // Edit order state
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const [editItems, setEditItems] = useState<OrderItem[]>([]);
   const [editNotes, setEditNotes] = useState("");
@@ -198,20 +192,16 @@ export default function Pipeline() {
   const [editSource, setEditSource] = useState("");
   const [editErrors, setEditErrors] = useState<string[]>([]);
 
-  // Custom item in edit dialog
   const [editCustomDialogOpen, setEditCustomDialogOpen] = useState(false);
   const [editCustomItemName, setEditCustomItemName] = useState("");
   const [editCustomItemPrice, setEditCustomItemPrice] = useState("");
 
   const today = new Date().toISOString().split("T")[0];
 
-  // Pull-to-refresh: Firebase uses realtime listeners so data is always fresh,
-  // but we simulate a refresh with a brief delay for tactile feedback
   const handleRefresh = useCallback(async () => {
     await new Promise((resolve) => setTimeout(resolve, 600));
   }, []);
 
-  // Apply search filter (shared) then sort per-tab independently
   const searchedOrders = useMemo(() => searchOrders(orders, searchQuery), [orders, searchQuery]);
 
   const todayOrders = useMemo(
@@ -284,7 +274,6 @@ export default function Pipeline() {
   const handleEditSave = async () => {
     if (!editOrder) return;
 
-    // Validate with date/time + source
     const validation = validateEditOrder({
       customerName: editCustomerName,
       items: editItems,
@@ -334,7 +323,6 @@ export default function Pipeline() {
     );
   };
 
-  // Add a menu item to the edit order
   const addMenuItemToEdit = (menuItem: { id: string; name: string; basePrice: number }) => {
     setEditItems((prev) => {
       const existing = prev.find((c) => c.menuItemId === menuItem.id);
@@ -356,7 +344,6 @@ export default function Pipeline() {
     });
   };
 
-  // Add custom item in edit dialog
   const addCustomItemToEdit = () => {
     const name = editCustomItemName.trim();
     const price = parseFloat(editCustomItemPrice);
@@ -380,24 +367,25 @@ export default function Pipeline() {
   };
 
   const OrderCard = ({ order }: { order: Order }) => (
-    <Card className="transition-all duration-150 hover:shadow-md">
-      <CardContent className="p-4">
+    <Card className="transition-all duration-200 hover:shadow-warm-md rounded-2xl border-border/50 shadow-warm-sm overflow-hidden">
+      <CardContent className="p-5">
         {/* Items first */}
-        <div className="space-y-1 mb-2">
+        <div className="space-y-1.5 mb-3">
           {order.items.map((item, idx) => (
             <div key={idx} className="flex items-center justify-between text-sm">
               <span className="text-foreground font-medium">
-                {item.quantity}x {item.name}
+                <span className="text-primary font-bold tabular-nums">{item.quantity}x</span>{" "}
+                {item.name}
                 {item.menuItemId?.startsWith("custom-") && (
-                  <Badge variant="outline" className="ml-1 text-[9px] px-1 py-0 align-middle">
+                  <Badge variant="outline" className="ml-1.5 text-[9px] px-1.5 py-0 align-middle rounded-md">
                     Custom
                   </Badge>
                 )}
                 {item.note && (
-                  <span className="text-primary text-xs ml-1 italic">({item.note})</span>
+                  <span className="text-primary/70 text-xs ml-1.5 italic">({item.note})</span>
                 )}
               </span>
-              <span className="text-muted-foreground tabular-nums">
+              <span className="text-muted-foreground tabular-nums text-[0.8125rem]">
                 {formatPrice(item.basePrice * item.quantity, currency)}
               </span>
             </div>
@@ -407,23 +395,26 @@ export default function Pipeline() {
         {/* Customer name + status */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2">
-            <User className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">{order.customerName}</span>
+            <div className="w-6 h-6 rounded-lg bg-muted flex items-center justify-center">
+              <User className="w-3.5 h-3.5 text-muted-foreground" />
+            </div>
+            <span className="text-sm text-muted-foreground font-medium">{order.customerName}</span>
           </div>
           <Badge
             variant={order.status === "pending" ? "outline" : "default"}
-            className={
+            className={cn(
+              "rounded-lg text-[0.6875rem] font-semibold",
               order.status === "pending"
                 ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400 dark:border-amber-800"
                 : "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-800"
-            }
+            )}
           >
             {order.status === "pending" ? "Pending" : "Completed"}
           </Badge>
         </div>
 
         {order.notes && (
-          <p className="text-xs text-muted-foreground italic mb-3 bg-muted/50 p-2 rounded">
+          <p className="text-xs text-muted-foreground italic mb-3 bg-muted/40 p-2.5 rounded-xl border border-border/30">
             {order.notes}
           </p>
         )}
@@ -431,13 +422,13 @@ export default function Pipeline() {
         {/* Meta */}
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground mb-3">
           {order.pickupDate && (
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5">
               <Clock className="w-3 h-3" />
               {formatDisplayDate(order.pickupDate, order.pickupTime)}
             </span>
           )}
           {order.source && (
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5">
               <Tag className="w-3 h-3" />
               {order.source}
             </span>
@@ -445,14 +436,13 @@ export default function Pipeline() {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-border">
-          <span className="font-bold tabular-nums shrink-0">{formatPrice(order.total, currency)}</span>
+        <div className="flex items-center justify-between pt-3.5 border-t border-border/50">
+          <span className="font-bold tabular-nums shrink-0 text-[0.9375rem]">{formatPrice(order.total, currency)}</span>
           <div className="flex items-center gap-0.5 sm:gap-1 flex-wrap justify-end">
-            {/* Duplicate — available for all orders */}
             <Button
               size="sm"
               variant="ghost"
-              className="h-8 px-2 text-muted-foreground hover:text-foreground"
+              className="h-8 px-2 text-muted-foreground hover:text-foreground rounded-lg"
               onClick={() => handleDuplicate(order)}
               title="Duplicate order"
             >
@@ -464,7 +454,7 @@ export default function Pipeline() {
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                  className="h-8 px-2 text-muted-foreground hover:text-foreground rounded-lg"
                   onClick={() => openEdit(order)}
                   title="Edit order"
                 >
@@ -473,7 +463,7 @@ export default function Pipeline() {
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="h-8 px-2 text-muted-foreground hover:text-destructive"
+                  className="h-8 px-2 text-muted-foreground hover:text-destructive rounded-lg"
                   onClick={() => setDeleteTarget(order.id)}
                   title="Delete order"
                 >
@@ -481,7 +471,7 @@ export default function Pipeline() {
                 </Button>
                 <Button
                   size="sm"
-                  className="h-8 gap-1"
+                  className="h-8 gap-1.5 rounded-xl font-semibold shadow-warm-sm"
                   onClick={() => handleComplete(order.id)}
                 >
                   <Check className="w-3.5 h-3.5" />
@@ -494,7 +484,7 @@ export default function Pipeline() {
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                  className="h-8 px-2 text-muted-foreground hover:text-foreground rounded-lg"
                   onClick={() => handleReturnToPending(order.id)}
                   title="Return to pending"
                 >
@@ -503,7 +493,7 @@ export default function Pipeline() {
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="h-8 px-2 text-muted-foreground hover:text-destructive"
+                  className="h-8 px-2 text-muted-foreground hover:text-destructive rounded-lg"
                   onClick={() => setDeleteTarget(order.id)}
                   title="Delete order"
                 >
@@ -518,57 +508,59 @@ export default function Pipeline() {
   );
 
   const EmptyState = ({ message }: { message: string }) => (
-    <div className="text-center py-12 text-muted-foreground">
-      <p className="text-sm">{message}</p>
+    <div className="text-center py-16 text-muted-foreground">
+      <div className="w-14 h-14 rounded-2xl bg-muted/60 flex items-center justify-center mx-auto mb-3">
+        <ClipboardList className="w-6 h-6 opacity-40" />
+      </div>
+      <p className="text-sm font-medium">{message}</p>
     </div>
   );
 
-  // ---- Inline edit form JSX (shared between Sheet mobile + Dialog desktop) ----
+  // ---- Inline edit form JSX ----
   const editFormContent = (
     <div className="flex flex-col h-full">
-      {/* Order details */}
-      <div className="space-y-3 mb-4">
+      <div className="space-y-3.5 mb-4">
         <div>
-          <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <Label className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider">
             Customer Name <span className="text-destructive">*</span>
           </Label>
           <Input
             value={editCustomerName}
             onChange={(e) => setEditCustomerName(e.target.value)}
-            className={cn("mt-1 h-11", editErrors.some(e => e.toLowerCase().includes("customer")) && "border-destructive")}
+            className={cn("mt-1.5 h-11 rounded-xl", editErrors.some(e => e.toLowerCase().includes("customer")) && "border-destructive")}
             placeholder="Customer name"
           />
         </div>
         <div className="grid grid-cols-1 gap-3">
           <div className="min-w-0 overflow-hidden">
-            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <Label className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider">
               Pickup Date
             </Label>
             <Input
               type="date"
               value={editPickupDate}
               onChange={(e) => setEditPickupDate(e.target.value)}
-              className={cn("mt-1 h-11 w-full text-sm", editErrors.some(e => e.toLowerCase().includes("date")) && "border-destructive")}
+              className={cn("mt-1.5 h-11 w-full text-sm rounded-xl", editErrors.some(e => e.toLowerCase().includes("date")) && "border-destructive")}
             />
           </div>
           <div className="min-w-0 overflow-hidden">
-            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <Label className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider">
               Pickup Time
             </Label>
             <Input
               type="time"
               value={editPickupTime}
               onChange={(e) => setEditPickupTime(e.target.value)}
-              className={cn("mt-1 h-11 w-full text-sm", editErrors.some(e => e.toLowerCase().includes("time")) && "border-destructive")}
+              className={cn("mt-1.5 h-11 w-full text-sm rounded-xl", editErrors.some(e => e.toLowerCase().includes("time")) && "border-destructive")}
             />
           </div>
         </div>
         <div>
-          <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <Label className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider">
             Source <span className="text-destructive">*</span>
           </Label>
           <Select value={editSource} onValueChange={setEditSource}>
-            <SelectTrigger className={cn("mt-1 h-11", editErrors.some(e => e.toLowerCase().includes("source")) && "border-destructive")}>
+            <SelectTrigger className={cn("mt-1.5 h-11 rounded-xl", editErrors.some(e => e.toLowerCase().includes("source")) && "border-destructive")}>
               <SelectValue placeholder="Select source" />
             </SelectTrigger>
             <SelectContent>
@@ -582,9 +574,8 @@ export default function Pipeline() {
         </div>
       </div>
 
-      {/* Validation errors */}
       {editErrors.length > 0 && (
-        <div className="mb-3 p-2.5 rounded-md bg-destructive/10 border border-destructive/20">
+        <div className="mb-3 p-3 rounded-xl bg-destructive/8 border border-destructive/15">
           <div className="flex items-start gap-2">
             <AlertCircle className="w-4 h-4 text-destructive mt-0.5 shrink-0" />
             <div className="text-xs text-destructive space-y-0.5">
@@ -596,15 +587,14 @@ export default function Pipeline() {
         </div>
       )}
 
-      {/* Items */}
       <div className="flex-1 overflow-y-auto space-y-2">
         {editItems.map((item, idx) => (
-          <div key={idx} className="flex items-start gap-2 p-2.5 rounded-md bg-muted/50">
+          <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/40 border border-border/40">
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">
+              <p className="text-sm font-semibold truncate">
                 {item.name}
                 {item.menuItemId?.startsWith("custom-") && (
-                  <Badge variant="outline" className="ml-1 text-[9px] px-1 py-0 align-middle">
+                  <Badge variant="outline" className="ml-1.5 text-[9px] px-1.5 py-0 align-middle rounded-md">
                     Custom
                   </Badge>
                 )}
@@ -614,27 +604,27 @@ export default function Pipeline() {
                 <p className="text-xs text-primary italic mt-0.5">{item.note}</p>
               )}
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5">
               <button
                 onClick={() => {
                   const note = prompt("Note for " + item.name + ":", item.note);
                   if (note !== null) updateEditItemNote(idx, note);
                 }}
-                className="p-1 rounded hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
+                className="p-1.5 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors duration-150"
                 title="Edit note"
               >
                 <StickyNote className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => updateEditItemQty(idx, -1)}
-                className="p-1 rounded hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
+                className="p-1.5 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors duration-150"
               >
                 <Minus className="w-3.5 h-3.5" />
               </button>
-              <span className="w-6 text-center text-sm tabular-nums">{item.quantity}</span>
+              <span className="w-6 text-center text-sm font-bold tabular-nums">{item.quantity}</span>
               <button
                 onClick={() => updateEditItemQty(idx, 1)}
-                className="p-1 rounded hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
+                className="p-1.5 rounded-lg hover:bg-accent text-muted-foreground hover:text-foreground transition-colors duration-150"
               >
                 <Plus className="w-3.5 h-3.5" />
               </button>
@@ -642,7 +632,6 @@ export default function Pipeline() {
           </div>
         ))}
 
-        {/* Add from menu + custom item */}
         <div className="flex flex-col gap-2">
           {menuItems.length > 0 && (
             <Select
@@ -651,7 +640,7 @@ export default function Pipeline() {
                 if (item) addMenuItemToEdit(item);
               }}
             >
-              <SelectTrigger className="text-xs">
+              <SelectTrigger className="text-xs rounded-xl">
                 <SelectValue placeholder="+ Add from menu" />
               </SelectTrigger>
               <SelectContent>
@@ -668,7 +657,7 @@ export default function Pipeline() {
           <Button
             variant="outline"
             size="sm"
-            className="w-full gap-1.5 text-xs"
+            className="w-full gap-1.5 text-xs rounded-xl border-dashed"
             onClick={() => setEditCustomDialogOpen(true)}
           >
             <PackagePlus className="w-3.5 h-3.5" />
@@ -677,35 +666,33 @@ export default function Pipeline() {
         </div>
       </div>
 
-      {/* Notes */}
       <div className="mt-3">
-        <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Notes</Label>
+        <Label className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider">Notes</Label>
         <Textarea
           value={editNotes}
           onChange={(e) => setEditNotes(e.target.value)}
-          className="mt-1 h-16 resize-none"
+          className="mt-1.5 h-16 resize-none rounded-xl"
           placeholder="Order notes..."
         />
       </div>
 
-      {/* Total & Save */}
-      <div className="mt-4 pt-3 border-t border-border pb-6">
+      <div className="mt-4 pt-4 border-t border-border/60 pb-6">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-medium text-muted-foreground">Total</span>
-          <span className="text-xl font-bold tabular-nums">
+          <span className="text-xl font-bold tabular-nums tracking-tight">
             {formatPrice(editItems.reduce((s, i) => s + i.basePrice * i.quantity, 0), currency)}
           </span>
         </div>
         <div className="flex gap-2">
           <Button
             variant="outline"
-            className="flex-1 h-12 text-base"
+            className="flex-1 h-12 text-base rounded-xl"
             onClick={() => setEditOrder(null)}
           >
             Cancel
           </Button>
           <Button
-            className="flex-1 h-12 text-base font-semibold"
+            className="flex-1 h-12 text-base font-semibold rounded-xl shadow-warm-sm"
             onClick={handleEditSave}
           >
             Save Changes
@@ -726,50 +713,49 @@ export default function Pipeline() {
   return (
     <PullToRefresh onRefresh={handleRefresh}>
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-5">
           <h1 className="text-2xl font-bold tracking-tight">Order Pipeline</h1>
         </div>
 
       {/* Search bar */}
       <div className="flex gap-2 mb-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Search orders..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="pl-10 rounded-xl"
           />
         </div>
       </div>
 
       <Tabs defaultValue="today" className="w-full" onValueChange={(v) => setActiveTab(v as "today" | "pending" | "completed")}>
         <div className="mb-4 space-y-3">
-          <TabsList className="w-full sm:w-auto">
-            <TabsTrigger value="today" className="gap-1.5">
+          <TabsList className="w-full sm:w-auto rounded-xl">
+            <TabsTrigger value="today" className="gap-1.5 rounded-lg">
               Today
-              <Badge variant="secondary" className="ml-1 h-5 min-w-5 text-[10px]">
+              <Badge variant="secondary" className="ml-1 h-5 min-w-5 text-[10px] rounded-md">
                 {todayOrders.length}
               </Badge>
             </TabsTrigger>
-            <TabsTrigger value="pending" className="gap-1.5">
+            <TabsTrigger value="pending" className="gap-1.5 rounded-lg">
               Pending
-              <Badge variant="secondary" className="ml-1 h-5 min-w-5 text-[10px]">
+              <Badge variant="secondary" className="ml-1 h-5 min-w-5 text-[10px] rounded-md">
                 {pendingOrders.length}
               </Badge>
             </TabsTrigger>
-            <TabsTrigger value="completed" className="gap-1.5">
+            <TabsTrigger value="completed" className="gap-1.5 rounded-lg">
               Completed
-              <Badge variant="secondary" className="ml-1 h-5 min-w-5 text-[10px]">
+              <Badge variant="secondary" className="ml-1 h-5 min-w-5 text-[10px] rounded-md">
                 {completedOrders.length}
               </Badge>
             </TabsTrigger>
           </TabsList>
 
-          {/* Per-tab sort selector — below tabs */}
           <div>
             <Select value={currentSort} onValueChange={(v) => setCurrentSort(v as SortOption)}>
-              <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px] rounded-xl">
                 <ArrowUpDown className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" />
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
@@ -822,7 +808,7 @@ export default function Pipeline() {
 
       {/* Delete confirmation */}
       <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this order?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -830,10 +816,10 @@ export default function Pipeline() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-xl"
             >
               Delete
             </AlertDialogAction>
@@ -842,18 +828,17 @@ export default function Pipeline() {
       </AlertDialog>
 
       {/* Edit order — Sheet on mobile, Dialog on desktop */}
-      {/* Both are always rendered; only the correct one opens based on viewport */}
       <Sheet open={isMobile && !!editOrder} onOpenChange={() => setEditOrder(null)}>
-        <SheetContent side="bottom" className="h-[95vh] rounded-t-2xl px-5 pb-8 overflow-y-auto overflow-x-hidden">
+        <SheetContent side="bottom" className="h-[95vh] rounded-t-3xl px-5 pb-8 overflow-y-auto overflow-x-hidden">
           <SheetHeader className="pb-3">
-            <SheetTitle>Edit Order</SheetTitle>
+            <SheetTitle className="text-lg font-bold">Edit Order</SheetTitle>
           </SheetHeader>
           {editFormContent}
         </SheetContent>
       </Sheet>
 
       <Dialog open={!isMobile && !!editOrder} onOpenChange={() => setEditOrder(null)}>
-        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl">
           <DialogHeader>
             <DialogTitle>Edit Order</DialogTitle>
           </DialogHeader>
@@ -863,24 +848,24 @@ export default function Pipeline() {
 
       {/* Custom item dialog for edit */}
       <Dialog open={editCustomDialogOpen} onOpenChange={setEditCustomDialogOpen}>
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent className="sm:max-w-sm rounded-2xl">
           <DialogHeader>
             <DialogTitle>Add Custom Item</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             <div>
-              <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <Label className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider">
                 Item Name <span className="text-destructive">*</span>
               </Label>
               <Input
                 placeholder="e.g., Special Cake, Custom Order"
                 value={editCustomItemName}
                 onChange={(e) => setEditCustomItemName(e.target.value)}
-                className="mt-1"
+                className="mt-1.5 rounded-xl"
               />
             </div>
             <div>
-              <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              <Label className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider">
                 Price <span className="text-destructive">*</span>
               </Label>
               <Input
@@ -890,15 +875,15 @@ export default function Pipeline() {
                 step="0.01"
                 value={editCustomItemPrice}
                 onChange={(e) => setEditCustomItemPrice(e.target.value)}
-                className="mt-1"
+                className="mt-1.5 rounded-xl"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditCustomDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setEditCustomDialogOpen(false)} className="rounded-xl">
               Cancel
             </Button>
-            <Button onClick={addCustomItemToEdit}>Add To Order</Button>
+            <Button onClick={addCustomItemToEdit} className="rounded-xl">Add To Order</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

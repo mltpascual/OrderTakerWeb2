@@ -1,7 +1,7 @@
 /*
- * Design: Swiss Utility — Functional Minimalism
- * Login page: Split layout on desktop (hero left, form right), stacked on mobile
- * Teal accent (#0D9488), DM Sans headings, Inter body
+ * Design: Warm Craft — Premium Food-Tech Aesthetic
+ * Login page: Warm gradient background, centered frosted card
+ * Amber-orange accent, Plus Jakarta Sans
  */
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -37,21 +37,32 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+    <div className="min-h-screen flex flex-col lg:flex-row relative overflow-hidden">
+      {/* Warm gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/8" />
+      
+      {/* Subtle pattern overlay */}
+      <div className="absolute inset-0 opacity-[0.015]" style={{
+        backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
+        backgroundSize: '32px 32px'
+      }} />
+
       {/* Hero section — hidden on mobile */}
-      <div className="hidden lg:flex lg:w-1/2 bg-muted items-center justify-center p-12 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10" />
+      <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12 relative">
         <div className="relative z-10 flex flex-col items-center gap-8 max-w-md">
-          <img
-            src={LOGIN_HERO_URL}
-            alt="Cafe counter illustration"
-            className="w-full max-w-sm rounded-lg"
-          />
+          <div className="relative">
+            <div className="absolute -inset-8 bg-primary/5 rounded-3xl blur-2xl" />
+            <img
+              src={LOGIN_HERO_URL}
+              alt="Cafe counter illustration"
+              className="relative w-full max-w-sm rounded-2xl shadow-warm-xl"
+            />
+          </div>
           <div className="text-center space-y-3">
-            <h2 className="text-2xl font-semibold text-foreground tracking-tight">
+            <h2 className="text-2xl font-bold text-foreground tracking-tight">
               Manage orders with ease
             </h2>
-            <p className="text-muted-foreground leading-relaxed">
+            <p className="text-muted-foreground leading-relaxed text-[0.9375rem]">
               A fast, clean order-taking tool built for food and beverage businesses.
             </p>
           </div>
@@ -59,22 +70,22 @@ export default function Login() {
       </div>
 
       {/* Login form */}
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
-        <Card className="w-full max-w-sm border-0 shadow-none lg:shadow-sm lg:border">
-          <CardHeader className="space-y-2 pb-6">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-                <UtensilsCrossed className="w-5 h-5 text-primary-foreground" />
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-12 relative z-10">
+        <Card className="w-full max-w-[26rem] border border-border/60 shadow-warm-xl bg-card/80 backdrop-blur-sm rounded-2xl">
+          <CardHeader className="space-y-2 pb-6 px-7 pt-8">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center">
+                <UtensilsCrossed className="w-5.5 h-5.5 text-primary" />
               </div>
-              <span className="text-lg font-semibold tracking-tight">Order Taker</span>
+              <span className="text-xl font-bold tracking-tight">Order Taker</span>
             </div>
-            <CardTitle className="text-2xl">Welcome back</CardTitle>
-            <CardDescription>Sign in to your account to continue</CardDescription>
+            <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+            <CardDescription className="text-[0.875rem]">Sign in to your account to continue</CardDescription>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <CardContent className="px-7 pb-8">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-[0.8125rem] font-medium">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -83,10 +94,11 @@ export default function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   autoComplete="email"
+                  className="h-12 rounded-xl text-[0.9375rem] px-4"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-[0.8125rem] font-medium">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -95,12 +107,15 @@ export default function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
+                  className="h-12 rounded-xl text-[0.9375rem] px-4"
                 />
               </div>
               {error && (
-                <p className="text-sm text-destructive font-medium">{error}</p>
+                <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20">
+                  <p className="text-sm text-destructive font-medium">{error}</p>
+                </div>
               )}
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full h-12 rounded-xl text-[0.9375rem] font-semibold shadow-warm-sm hover:shadow-warm transition-all duration-200" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />

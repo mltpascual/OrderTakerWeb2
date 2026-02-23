@@ -1,9 +1,7 @@
 /*
- * Design: Swiss Utility — Functional Minimalism
- * Reports: Time range tabs with metric cards, top selling items (qty + progress bar),
- *          top earning items (price + progress bar), revenue trend bar chart,
- *          orders by source, expandable orders by category with item breakdown
- * Tab order: All Time, Monthly, Weekly, Daily
+ * Design: Warm Craft — Premium Food-Tech Aesthetic
+ * Reports: Time range tabs with elevated metric cards, warm progress bars,
+ *          revenue trend bar chart, top selling/earning items, orders by source/category
  */
 import { useState, useMemo, useCallback } from "react";
 import { useOrders } from "@/hooks/useOrders";
@@ -41,7 +39,6 @@ export default function Reports() {
   const { menuItems } = useMenu();
   const { currency } = useSettings();
 
-  // Build a name→category map from current menu items
   const nameToCategoryMap = useMemo(() => {
     const map: Record<string, string> = {};
     menuItems.forEach((item) => {
@@ -140,14 +137,13 @@ export default function Reports() {
           .reduce((sum, o) => sum + o.total, 0);
         const startLabel = `${monthAbbr[weekStart.getMonth()]} ${weekStart.getDate()}`;
         const endDate = new Date(weekEnd);
-        endDate.setDate(endDate.getDate() - 1); // inclusive end
+        endDate.setDate(endDate.getDate() - 1);
         const endLabel = `${monthAbbr[endDate.getMonth()]} ${endDate.getDate()}`;
         points.push({ label: `${startLabel}-${endLabel}`, revenue: weekRevenue });
       }
       return points;
     }
 
-    // "all" — monthly breakdown (last 6 months)
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const points = [];
     for (let m = 5; m >= 0; m--) {
@@ -169,7 +165,6 @@ export default function Reports() {
     const totalRevenue = filteredOrders.reduce((sum, o) => sum + o.total, 0);
     const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
-    // Top selling items (by quantity) — quantity only
     const itemCounts: Record<string, { name: string; quantity: number; revenue: number }> = {};
     filteredOrders.forEach((order) => {
       order.items.forEach((item) => {
@@ -186,13 +181,11 @@ export default function Reports() {
       .slice(0, 10);
     const maxSellingQty = topSellingItems.length > 0 ? topSellingItems[0].quantity : 1;
 
-    // Top earning items (by revenue) — price only
     const topEarningItems = Object.values(itemCounts)
       .sort((a, b) => b.revenue - a.revenue)
       .slice(0, 10);
     const maxEarningRev = topEarningItems.length > 0 ? topEarningItems[0].revenue : 1;
 
-    // Orders by source
     const sourceData: Record<string, { count: number; revenue: number }> = {};
     filteredOrders.forEach((order) => {
       const src = order.source || "Unknown";
@@ -206,7 +199,6 @@ export default function Reports() {
       .map(([source, data]) => ({ source, count: data.count, revenue: data.revenue }))
       .sort((a, b) => b.count - a.count);
 
-    // Orders by category — with individual item breakdown
     const categoryItemMap: Record<string, Record<string, number>> = {};
     const categoryTotals: Record<string, { quantity: number; revenue: number }> = {};
     filteredOrders.forEach((order) => {
@@ -255,8 +247,6 @@ export default function Reports() {
     };
   };
 
-  // Pull-to-refresh: Firebase uses realtime listeners so data is always fresh,
-  // but we simulate a refresh with a brief delay for tactile feedback
   const handleRefresh = useCallback(async () => {
     await new Promise((resolve) => setTimeout(resolve, 600));
   }, []);
@@ -280,53 +270,61 @@ export default function Reports() {
     };
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 animate-slide-up">
         {/* Metric cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <ShoppingBag className="w-4 h-4 text-primary" />
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <Card className="rounded-2xl border-border/50 shadow-warm-sm hover:shadow-warm transition-shadow duration-200">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <ShoppingBag className="w-4 h-4 text-primary" />
+                </div>
+                <span className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider">
                   Total Orders
                 </span>
               </div>
-              <p className="text-xl sm:text-2xl font-bold tabular-nums">{metrics.totalOrders}</p>
+              <p className="text-2xl sm:text-3xl font-bold tabular-nums tracking-tight">{metrics.totalOrders}</p>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <DollarSign className="w-4 h-4 text-primary" />
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <Card className="rounded-2xl border-border/50 shadow-warm-sm hover:shadow-warm transition-shadow duration-200">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <DollarSign className="w-4 h-4 text-primary" />
+                </div>
+                <span className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider">
                   Revenue
                 </span>
               </div>
-              <p className="text-xl sm:text-2xl font-bold tabular-nums">{formatPrice(metrics.totalRevenue, currency)}</p>
+              <p className="text-2xl sm:text-3xl font-bold tabular-nums tracking-tight">{formatPrice(metrics.totalRevenue, currency)}</p>
             </CardContent>
           </Card>
-          <Card className="sm:col-span-2 lg:col-span-1">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="w-4 h-4 text-primary" />
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <Card className="sm:col-span-2 lg:col-span-1 rounded-2xl border-border/50 shadow-warm-sm hover:shadow-warm transition-shadow duration-200">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-primary" />
+                </div>
+                <span className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider">
                   Avg. Order
                 </span>
               </div>
-              <p className="text-xl sm:text-2xl font-bold tabular-nums">{formatPrice(metrics.avgOrderValue, currency)}</p>
+              <p className="text-2xl sm:text-3xl font-bold tabular-nums tracking-tight">{formatPrice(metrics.avgOrderValue, currency)}</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Revenue trend chart */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-primary" />
+        <Card className="rounded-2xl border-border/50 shadow-warm-sm">
+          <CardHeader className="pb-3 px-5 pt-5">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                <BarChart3 className="w-3.5 h-3.5 text-primary" />
+              </div>
               Revenue Trend
             </CardTitle>
           </CardHeader>
-          <CardContent className="pt-0">
+          <CardContent className="pt-0 px-5 pb-5">
             {trendData.every((d) => d.revenue === 0) ? (
               <p className="text-sm text-muted-foreground py-8 text-center">No revenue data yet</p>
             ) : (
@@ -355,17 +353,18 @@ export default function Reports() {
                     <Tooltip
                       formatter={(value: number) => [formatPrice(value, currency), "Revenue"]}
                       contentStyle={{
-                        backgroundColor: "hsl(var(--popover))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "0.5rem",
+                        backgroundColor: "var(--popover)",
+                        border: "1px solid var(--border)",
+                        borderRadius: "0.75rem",
                         fontSize: "0.75rem",
+                        boxShadow: "0 4px 12px -2px rgba(120, 80, 40, 0.08)",
                       }}
-                      labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+                      labelStyle={{ color: "var(--muted-foreground)" }}
                     />
                     <Bar
                       dataKey="revenue"
-                      fill="hsl(var(--primary))"
-                      radius={[4, 4, 0, 0]}
+                      fill="var(--primary)"
+                      radius={[6, 6, 0, 0]}
                       maxBarSize={40}
                     />
                   </BarChart>
@@ -376,35 +375,37 @@ export default function Reports() {
         </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-          {/* Top selling items (quantity only + progress bar) */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Award className="w-4 h-4 text-primary" />
+          {/* Top selling items */}
+          <Card className="rounded-2xl border-border/50 shadow-warm-sm">
+            <CardHeader className="pb-3 px-5 pt-5">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Award className="w-3.5 h-3.5 text-primary" />
+                </div>
                 Top Selling Items
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-0">
+            <CardContent className="pt-0 px-5 pb-5">
               {metrics.topSellingItems.length === 0 ? (
                 <p className="text-sm text-muted-foreground py-4 text-center">No data yet</p>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-3.5">
                   {metrics.topSellingItems.map((item, idx) => (
-                    <div key={item.name} className="space-y-1">
+                    <div key={item.name} className="space-y-1.5">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
-                          <span className="text-xs font-medium text-muted-foreground w-5 text-right tabular-nums">
+                          <span className="text-xs font-bold text-muted-foreground w-5 text-right tabular-nums">
                             {idx + 1}
                           </span>
                           <span className="text-sm font-medium">{item.name}</span>
                         </div>
-                        <span className="text-sm font-semibold tabular-nums">
+                        <span className="text-sm font-bold tabular-nums">
                           {item.quantity} sold
                         </span>
                       </div>
-                      <div className="ml-7.5 h-1.5 bg-muted rounded-full overflow-hidden">
+                      <div className="ml-7.5 h-2 bg-muted rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-primary rounded-full transition-all duration-300"
+                          className="h-full bg-primary/80 rounded-full transition-all duration-500 ease-out"
                           style={{ width: `${item.percentage}%` }}
                         />
                       </div>
@@ -415,35 +416,37 @@ export default function Reports() {
             </CardContent>
           </Card>
 
-          {/* Top earning items (price only + progress bar) */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-primary" />
+          {/* Top earning items */}
+          <Card className="rounded-2xl border-border/50 shadow-warm-sm">
+            <CardHeader className="pb-3 px-5 pt-5">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Trophy className="w-3.5 h-3.5 text-primary" />
+                </div>
                 Top Earning Items
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-0">
+            <CardContent className="pt-0 px-5 pb-5">
               {metrics.topEarningItems.length === 0 ? (
                 <p className="text-sm text-muted-foreground py-4 text-center">No data yet</p>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-3.5">
                   {metrics.topEarningItems.map((item, idx) => (
-                    <div key={item.name} className="space-y-1">
+                    <div key={item.name} className="space-y-1.5">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
-                          <span className="text-xs font-medium text-muted-foreground w-5 text-right tabular-nums">
+                          <span className="text-xs font-bold text-muted-foreground w-5 text-right tabular-nums">
                             {idx + 1}
                           </span>
                           <span className="text-sm font-medium">{item.name}</span>
                         </div>
-                        <span className="text-sm font-semibold tabular-nums text-primary">
+                        <span className="text-sm font-bold tabular-nums text-primary">
                           {formatPrice(item.revenue, currency)}
                         </span>
                       </div>
-                      <div className="ml-7.5 h-1.5 bg-muted rounded-full overflow-hidden">
+                      <div className="ml-7.5 h-2 bg-muted rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-primary rounded-full transition-all duration-300"
+                          className="h-full bg-primary/80 rounded-full transition-all duration-500 ease-out"
                           style={{ width: `${item.percentage}%` }}
                         />
                       </div>
@@ -455,36 +458,38 @@ export default function Reports() {
           </Card>
 
           {/* By source */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Tag className="w-4 h-4 text-primary" />
+          <Card className="rounded-2xl border-border/50 shadow-warm-sm">
+            <CardHeader className="pb-3 px-5 pt-5">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Tag className="w-3.5 h-3.5 text-primary" />
+                </div>
                 Orders By Source
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-0">
+            <CardContent className="pt-0 px-5 pb-5">
               {metrics.bySource.length === 0 ? (
                 <p className="text-sm text-muted-foreground py-4 text-center">No data yet</p>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-3.5">
                   {metrics.bySource.map((item) => {
                     const pct = metrics.totalOrders > 0 ? (item.count / metrics.totalOrders) * 100 : 0;
                     return (
-                      <div key={item.source} className="space-y-1">
+                      <div key={item.source} className="space-y-1.5">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm gap-0.5 sm:gap-0">
                           <span className="font-medium">{item.source}</span>
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-muted-foreground tabular-nums">
                               {item.count} orders ({pct.toFixed(0)}%)
                             </span>
-                            <span className="text-xs font-semibold text-primary tabular-nums">
+                            <span className="text-xs font-bold text-primary tabular-nums">
                               {formatPrice(item.revenue, currency)}
                             </span>
                           </div>
                         </div>
-                        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div className="h-2 bg-muted rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-primary rounded-full transition-all duration-300"
+                            className="h-full bg-primary/80 rounded-full transition-all duration-500 ease-out"
                             style={{ width: `${pct}%` }}
                           />
                         </div>
@@ -496,15 +501,17 @@ export default function Reports() {
             </CardContent>
           </Card>
 
-          {/* By category — expandable boxes with item breakdown */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Layers className="w-4 h-4 text-primary" />
+          {/* By category — expandable */}
+          <Card className="rounded-2xl border-border/50 shadow-warm-sm">
+            <CardHeader className="pb-3 px-5 pt-5">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Layers className="w-3.5 h-3.5 text-primary" />
+                </div>
                 Orders By Category
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-0">
+            <CardContent className="pt-0 px-5 pb-5">
               {metrics.byCategory.length === 0 ? (
                 <p className="text-sm text-muted-foreground py-4 text-center">No data yet</p>
               ) : (
@@ -515,12 +522,11 @@ export default function Reports() {
                     return (
                       <div
                         key={cat.category}
-                        className="rounded-lg border border-border bg-muted/30 overflow-hidden"
+                        className="rounded-xl border border-border/50 bg-muted/30 overflow-hidden"
                       >
-                        {/* Category header — clickable */}
                         <button
                           onClick={() => toggleCategory(cat.category)}
-                          className="w-full p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between hover:bg-muted/50 transition-colors text-left gap-1 sm:gap-0"
+                          className="w-full p-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between hover:bg-muted/50 transition-colors duration-150 text-left gap-1 sm:gap-0"
                         >
                           <div className="flex items-center gap-2">
                             {isExpanded ? (
@@ -534,17 +540,16 @@ export default function Reports() {
                             <span className="text-xs text-muted-foreground tabular-nums">
                               {cat.totalQuantity} sold
                             </span>
-                            <span className="text-sm font-semibold text-primary tabular-nums">
+                            <span className="text-sm font-bold text-primary tabular-nums">
                               {formatPrice(cat.totalRevenue, currency)}
                             </span>
                           </div>
                         </button>
 
-                        {/* Revenue percentage bar */}
-                        <div className="px-3 pb-2">
-                          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div className="px-3.5 pb-2.5">
+                          <div className="h-2 bg-muted rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-primary/60 rounded-full transition-all duration-300"
+                              className="h-full bg-primary/50 rounded-full transition-all duration-500 ease-out"
                               style={{ width: `${revPct}%` }}
                             />
                           </div>
@@ -553,18 +558,17 @@ export default function Reports() {
                           </p>
                         </div>
 
-                        {/* Expanded item breakdown */}
                         {isExpanded && (
-                          <div className="border-t border-border px-3 py-2 space-y-2 bg-background/50">
+                          <div className="border-t border-border/50 px-3.5 py-3 space-y-2.5 bg-background/50">
                             {cat.items.map((item) => (
                               <div key={item.name} className="space-y-1">
                                 <div className="flex items-center justify-between text-sm">
                                   <span className="text-foreground">{item.name}</span>
                                   <span className="font-medium tabular-nums">{item.quantity}</span>
                                 </div>
-                                <div className="h-1 bg-muted rounded-full overflow-hidden">
+                                <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                                   <div
-                                    className="h-full bg-primary/40 rounded-full transition-all duration-300"
+                                    className="h-full bg-primary/40 rounded-full transition-all duration-500 ease-out"
                                     style={{ width: `${item.percentage}%` }}
                                   />
                                 </div>
@@ -595,14 +599,14 @@ export default function Reports() {
   return (
     <PullToRefresh onRefresh={handleRefresh}>
     <div>
-      <h1 className="text-2xl font-bold tracking-tight mb-4">Reports</h1>
+      <h1 className="text-2xl font-bold tracking-tight mb-5">Reports</h1>
 
       <Tabs defaultValue="all" className="w-full">
-        <TabsList className="mb-4 w-full sm:w-auto">
-          <TabsTrigger value="all">All Time</TabsTrigger>
-          <TabsTrigger value="monthly">Monthly</TabsTrigger>
-          <TabsTrigger value="weekly">Weekly</TabsTrigger>
-          <TabsTrigger value="daily">Daily</TabsTrigger>
+        <TabsList className="mb-5 w-full sm:w-auto rounded-xl">
+          <TabsTrigger value="all" className="rounded-lg">All Time</TabsTrigger>
+          <TabsTrigger value="monthly" className="rounded-lg">Monthly</TabsTrigger>
+          <TabsTrigger value="weekly" className="rounded-lg">Weekly</TabsTrigger>
+          <TabsTrigger value="daily" className="rounded-lg">Daily</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all">

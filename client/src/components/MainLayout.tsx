@@ -1,7 +1,7 @@
 /*
- * Design: Swiss Utility — Functional Minimalism
- * Layout: Fixed left sidebar on desktop, bottom tab bar on mobile
- * Teal accent for active nav items, charcoal for inactive
+ * Design: Warm Craft — Premium Food-Tech Aesthetic
+ * Layout: Floating sidebar on desktop, elevated bottom bar on mobile
+ * Amber-orange accent, Plus Jakarta Sans, warm shadows
  */
 import { type ReactNode, useEffect } from "react";
 import { Link, useLocation } from "wouter";
@@ -30,12 +30,12 @@ const navItems = [
 
 // Accent color presets — must match SettingsPage.tsx
 const ACCENT_PRESETS: Record<string, { lightOklch: string; darkOklch: string }> = {
+  Amber: { lightOklch: "oklch(0.62 0.17 52)", darkOklch: "oklch(0.72 0.16 52)" },
   Teal: { lightOklch: "oklch(0.55 0.15 170)", darkOklch: "oklch(0.65 0.15 170)" },
   Blue: { lightOklch: "oklch(0.55 0.18 260)", darkOklch: "oklch(0.65 0.18 260)" },
   Violet: { lightOklch: "oklch(0.50 0.20 290)", darkOklch: "oklch(0.60 0.20 290)" },
   Rose: { lightOklch: "oklch(0.55 0.22 15)", darkOklch: "oklch(0.65 0.20 15)" },
   Orange: { lightOklch: "oklch(0.58 0.20 50)", darkOklch: "oklch(0.68 0.18 50)" },
-  Amber: { lightOklch: "oklch(0.60 0.18 75)", darkOklch: "oklch(0.70 0.16 75)" },
   Emerald: { lightOklch: "oklch(0.55 0.15 155)", darkOklch: "oklch(0.65 0.15 155)" },
   Indigo: { lightOklch: "oklch(0.50 0.20 275)", darkOklch: "oklch(0.60 0.20 275)" },
   Pink: { lightOklch: "oklch(0.55 0.22 350)", darkOklch: "oklch(0.65 0.20 350)" },
@@ -49,7 +49,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   // Apply accent color from settings on mount and when theme/settings change
   useEffect(() => {
-    const colorName = settings.accentColor || "Teal";
+    const colorName = settings.accentColor || "Amber";
     const preset = ACCENT_PRESETS[colorName];
     if (!preset) return;
 
@@ -64,60 +64,78 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-background">
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-56 border-r border-border bg-card fixed inset-y-0 left-0 z-30">
-        <div className="p-5 border-b border-border">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <UtensilsCrossed className="w-4.5 h-4.5 text-primary-foreground" />
+      {/* Desktop floating sidebar */}
+      <aside className="hidden lg:flex lg:flex-col lg:w-[15rem] fixed inset-y-3 left-3 z-30 rounded-2xl bg-card shadow-warm-lg border border-border/60 overflow-hidden">
+        {/* Logo area */}
+        <div className="p-5 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+              <UtensilsCrossed className="w-[1.125rem] h-[1.125rem] text-primary" />
             </div>
-            <span className="font-semibold text-base tracking-tight">Order Taker</span>
+            <div>
+              <span className="font-bold text-[0.9375rem] tracking-tight text-foreground">Order Taker</span>
+            </div>
           </div>
         </div>
-        <nav className="flex-1 p-3 space-y-1">
+
+        {/* Navigation */}
+        <nav className="flex-1 px-3 space-y-0.5">
           {navItems.map((item) => {
             const isActive = location === item.path;
             return (
               <Link key={item.path} href={item.path}>
                 <div
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors duration-150",
+                    "flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.8125rem] font-medium transition-all duration-200",
                     isActive
-                      ? "bg-primary/10 text-primary"
+                      ? "bg-primary text-primary-foreground shadow-warm-sm"
                       : "text-muted-foreground hover:bg-accent hover:text-foreground"
                   )}
                 >
-                  <item.icon className="w-4.5 h-4.5" />
+                  <item.icon className={cn("w-[1.125rem] h-[1.125rem]", isActive && "text-primary-foreground")} />
                   {item.label}
                 </div>
               </Link>
             );
           })}
         </nav>
+
+        {/* Bottom section */}
+        <div className="p-4 mt-auto">
+          <div className="rounded-xl bg-muted/60 px-3.5 py-3">
+            <p className="text-[0.6875rem] font-medium text-muted-foreground">Order Taker</p>
+            <p className="text-[0.625rem] text-muted-foreground/70 mt-0.5">v2.0 — Warm Craft</p>
+          </div>
+        </div>
       </aside>
 
       {/* Main content area */}
-      <main className="flex-1 lg:ml-56 pb-20 lg:pb-0">
-        <div className="p-4 lg:p-6 max-w-6xl mx-auto">{children}</div>
+      <main className="flex-1 lg:ml-[16.5rem] pb-24 lg:pb-0">
+        <div className="p-4 lg:p-8 max-w-6xl mx-auto animate-fade-in">{children}</div>
       </main>
 
-      {/* Mobile bottom tab bar */}
-      <nav className="lg:hidden fixed bottom-0 inset-x-0 bg-card border-t border-border z-30 safe-area-bottom">
-        <div className="flex items-center justify-around h-16">
+      {/* Mobile floating bottom tab bar */}
+      <nav className="lg:hidden fixed bottom-3 inset-x-3 bg-card/95 backdrop-blur-lg border border-border/60 z-30 rounded-2xl shadow-warm-lg safe-area-bottom">
+        <div className="flex items-center justify-around h-[4.25rem]">
           {navItems.map((item) => {
             const isActive = location === item.path;
             return (
               <Link key={item.path} href={item.path}>
                 <div
                   className={cn(
-                    "flex flex-col items-center gap-1 px-3 py-1.5 rounded-md transition-colors duration-150",
+                    "flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all duration-200 relative",
                     isActive
                       ? "text-primary"
-                      : "text-muted-foreground"
+                      : "text-muted-foreground active:scale-95"
                   )}
                 >
-                  <item.icon className="w-5 h-5" />
-                  <span className="text-[10px] font-medium">{item.label}</span>
+                  <div className={cn(
+                    "p-1.5 rounded-xl transition-all duration-200",
+                    isActive && "bg-primary/10"
+                  )}>
+                    <item.icon className="w-5 h-5" />
+                  </div>
+                  <span className="text-[0.625rem] font-semibold">{item.label}</span>
                 </div>
               </Link>
             );
