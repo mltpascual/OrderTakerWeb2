@@ -5,6 +5,9 @@ import { Route, Switch, Redirect } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { OrdersProvider } from "./contexts/OrdersContext";
+import { MenuProvider } from "./contexts/MenuContext";
+import { SettingsProvider } from "./contexts/SettingsContext";
 import MainLayout from "./components/MainLayout";
 import Login from "./pages/Login";
 import NewOrder from "./pages/NewOrder";
@@ -82,10 +85,16 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light" switchable>
         <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-          </TooltipProvider>
+          <OrdersProvider>
+            <MenuProvider>
+              <SettingsProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <Router />
+                </TooltipProvider>
+              </SettingsProvider>
+            </MenuProvider>
+          </OrdersProvider>
         </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>

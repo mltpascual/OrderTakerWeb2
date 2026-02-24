@@ -5,9 +5,9 @@
  * Elevated cards, warm shadows, rounded-2xl, smooth transitions
  */
 import { useState, useMemo } from "react";
-import { useMenu } from "@/hooks/useMenu";
-import { useOrders } from "@/hooks/useOrders";
-import { useSettings } from "@/hooks/useSettings";
+import { useMenu } from "@/contexts/MenuContext";
+import { useOrders } from "@/contexts/OrdersContext";
+import { useSettings } from "@/contexts/SettingsContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

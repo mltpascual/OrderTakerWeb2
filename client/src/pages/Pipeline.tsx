@@ -4,9 +4,9 @@
  * Warm shadows, rounded-2xl, smooth transitions
  */
 import { useState, useMemo, useCallback } from "react";
-import { useOrders } from "@/hooks/useOrders";
-import { useMenu } from "@/hooks/useMenu";
-import { useSettings } from "@/hooks/useSettings";
+import { useOrders } from "@/contexts/OrdersContext";
+import { useMenu } from "@/contexts/MenuContext";
+import { useSettings } from "@/contexts/SettingsContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

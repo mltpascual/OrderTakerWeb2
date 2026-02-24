@@ -4,9 +4,9 @@
  *          revenue trend bar chart, top selling/earning items, orders by source/category
  */
 import { useState, useMemo, useCallback } from "react";
-import { useOrders } from "@/hooks/useOrders";
-import { useMenu } from "@/hooks/useMenu";
-import { useSettings } from "@/hooks/useSettings";
+import { useOrders } from "@/contexts/OrdersContext";
+import { useMenu } from "@/contexts/MenuContext";
+import { useSettings } from "@/contexts/SettingsContext";
 import { formatPrice } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

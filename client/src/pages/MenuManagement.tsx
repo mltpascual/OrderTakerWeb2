@@ -5,7 +5,7 @@
  * Rounded-2xl cards, warm shadows, smooth transitions
  */
 import { useState, useRef } from "react";
-import { useMenu } from "@/hooks/useMenu";
+import { useMenu } from "@/contexts/MenuContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -40,7 +40,7 @@ import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Search, Loader2, ChevronDown } from "lucide-react";
 import type { MenuItem } from "@/lib/types";
 import { formatPrice } from "@/lib/types";
-import { useSettings } from "@/hooks/useSettings";
+import { useSettings } from "@/contexts/SettingsContext";
 import { cn } from "@/lib/utils";
 
 interface MenuFormData {

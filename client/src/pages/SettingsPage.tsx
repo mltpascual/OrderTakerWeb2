@@ -5,10 +5,10 @@
  */
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useSettings } from "@/hooks/useSettings";
+import { useSettings } from "@/contexts/SettingsContext";
 import { CURRENCIES, type CurrencyOption } from "@/lib/types";
-import { useOrders } from "@/hooks/useOrders";
-import { useMenu } from "@/hooks/useMenu";
+import { useOrders } from "@/contexts/OrdersContext";
+import { useMenu } from "@/contexts/MenuContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
